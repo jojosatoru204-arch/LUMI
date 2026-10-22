@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LUMI - Living World 3D</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1>LUMI</h1>
+            <p>Living World 3D</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="main-menu" class="menu-overlay">
+        <div class="menu-content">
+            <h1>LUMI</h1>
+            <p class="subtitle">THẾ GIỚI SỐNG 3D</p>
+            <button id="start-game-btn" class="menu-btn">BẮT ĐẦU</button>
+            <button id="continue-game-btn" class="menu-btn">TIẾP TỤC</button>
+            <button id="settings-btn" class="menu-btn">CÀI ĐẶT</button>
+        </div>
+    </div>
+
+    <!-- Settings Menu -->
+    <div id="settings-menu" class="menu-overlay hidden">
+        <div class="menu-content">
+            <h2>CÀI ĐẶT</h2>
+            <div class="settings-container">
+                <div class="setting-item">
+                    <span>ĐỒ HỌA:</span>
+                    <select id="graphics-preset">
+                        <option value="performance">Hiệu suất</option>
+                        <option value="balanced" selected>Cân bằng</option>
+                        <option value="quality">Chất lượng</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span>ÂM THANH:</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="sound-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>NGÔN NGỮ:</span>
+                    <select id="language-select">
+                        <option value="vi" selected>Tiếng Việt</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+            <button id="back-to-main-btn" class="menu-btn">TRỞ LẠI</button>
+        </div>
+    </div>
+
+    <!-- Tutorial Overlay -->
+    <div id="tutorial-overlay" class="menu-overlay hidden">
+        <div class="tutorial-content">
+            <h2>HƯỚNG DẪN</h2>
+            <div class="tutorial-steps">
+                <p><strong>Di chuyển:</strong> Dùngقبعديد joystick ảo trên màn hình</p>
+                <p><strong>Xoay camera:</strong> Kéo ngón tay trên vùng xoay</p>
+                <p><strong>Tương tác:</strong> Nhấn nút 🔍 khi gần vật thể</p>
+                <p><strong>Menu:</strong> Nhấn vào góc trên bên phải</p>
+            </div>
+            <button id="skip-tutorial-btn" class="menu-btn">BỎ QUA</button>
+        </div>
+    </div>
+
+    <!-- Game Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- HUD -->
+    <div id="hud" class="hud-overlay hidden">
+        <div class="top-hud">
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="icon">⏰</span>
+                    <span id="time-display">08:00</span>
+                </div>
+                <div class="status-item">
+                    <span class="icon">⚡</span>
+                    <div class="bar-container">
+                        <div class="progress-bar energy-bar" id="energy-bar"></div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <span class="icon">🍗</span>
+                    <div class="bar-container">
+                        <div class="progress-bar hunger-bar" id="hunger-bar"></div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <span class="icon">😊</span>
+                    <div class="bar-container">
+                        <div class="progress-bar happiness-bar" id="happiness-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="interaction-prompt" class="interaction-prompt hidden"></div>
+    </div>
+
+    <!-- Touch Controls -->
+    <div id="touch-controls" class="touch-controls hidden">
+        <div id="joystick-container">
+            <div id="joystick-base"></div>
+            <div id="joystick-stick"></div>
+        </div>
+        <div class="action-buttons">
+            <button id="interact-btn" class="action-btn">🔍</button>
+            <button id="jump-btn" class="action-btn">↑</button>
+        </div>
+        <div id="camera-rotate-zone" class="camera-rotate-zone"></div>
+    </div>
+
+    <!-- Pause Menu -->
+    <div id="pause-menu" class="menu-overlay hidden">
+        <div class="menu-content">
+            <h2>TẠM DỪNG</h2>
+            <button id="resume-btn" class="menu-btn">TIẾP TỤC</button>
+            <button id="save-btn" class="menu-btn">LƯU TRÌNH TRẠNG</button>
+            <button id="load-btn" class="menu-btn">TẢI TRÌNH TRẠNG</button>
+            <button id="restart-btn" class="menu-btn">BẮT ĐẦU LẠI</button>
+            <button id="exit-to-menu-btn" class="menu-btn">QUAY VỀ MENU</button>
+        </div>
+    </div>
+
+    <!-- Decoration Panel -->
+    <div id="decoration-panel" class="panel-overlay hidden">
+        <div class="panel-content">
+            <h3>TÙY CHỈNH</h3>
+            <div class="decoration-tabs">
+                <button class="tab-btn active" data-tab="furniture">NỘI THẤT</button>
+                <button class="tab-btn" data-tab="decor">TRANG TRÍ</button>
+            </div>
+            <div id="furniture-tab" class="decoration-tab">
+                <div class="item-grid">
+                    <div class="decoration-item" data-type="sofa" data-color="wood">
+                        <div class="item-preview sofa-preview"></div>
+                        <span>Ghost Sofa</span>
+                    </div>
+                    <div class="decoration-item" data-type="chair" data-color="red">
+                        <div class="item-preview chair-preview"></div>
+                        <span>Ghế Đỏ</span>
+                    </div>
+                </div>
+            </div>
+            <div id="decor-tab" class="decoration-tab hidden">
+                <div class="item-grid">
+                    <div class="decoration-item" data-type="plant" data-color="green">
+                        <div class="item-preview plant-preview"></div>
+                        <span>Cây Xanh</span>
+                    </div>
+                </div>
+            </div>
+            <button id="close-decoration-btn" class="close-btn">×</button>
+        </div>
+    </div>
+
+    <!-- Save Confirmation -->
+    <div id="save-confirmation" class="message-overlay hidden">
+        <div class="message-content">
+            <p id="save-message-text">Đã lưu trò chơi!</p>
+        </div>
+    </div>
+
+    <!-- Orientation Prompt -->
+    <div id="orientation-prompt" class="orientation-prompt hidden">
+        <div class="orientation-content">
+            <p>⚠️</p>
+            <p>Xin vui lòng xoay thiết bị sang chế độ ngang</p>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div id="error-message" class="error-overlay hidden">
+        <div class="error-content">
+            <h2>LỖI</h2>
+            <p id="error-text">WebGL không được hỗ trợ trên thiết bị của bạn.</p>
+            <button id="retry-btn" class="menu-btn">THỬ LẠI</button>
+        </div>
+    </div>
+
+    <!-- Three.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/lib/stats.min.js"></script>
+
+    <!-- Main Application -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
